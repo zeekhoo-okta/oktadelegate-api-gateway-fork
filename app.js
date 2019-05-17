@@ -122,11 +122,11 @@ app.post('/delegate/hook/callback', callbackAuthRequired, (req, res) => {
 
 
 app.post('/delegate/init', (req, res) => {
-	var sessionid = req.headers.sessionid;
-	var admin_id = req.headers.uid;
+	var sessionid = JSON.parse(req.headers.sessionid);
+	var admin_id = JSON.parse(req.headers.uid);
 
 	var headers = {
-		'Authorization': 'SSWS ' + req.headers.ssws
+		'Authorization': 'SSWS ' + JSON.parse(req.headers.ssws)
 	}
 
 	// get the target's group memberships
