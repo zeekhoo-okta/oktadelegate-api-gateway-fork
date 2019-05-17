@@ -1,5 +1,4 @@
 const express = require("express");
-const OktaJwtVerifier = require('@okta/jwt-verifier');
 const bodyParser = require('body-parser');
 const redis = require("redis");
 const request = require('request');
@@ -12,7 +11,6 @@ const issuer = process.env.ISSUER || 'https://dev-123.oktapreview.com/oauth2/def
 const client_id = process.env.CLIENT_ID || 'clientid'
 const assert_aud = process.env.ASSERT_AUD || 'api://default'
 const assert_scope = process.env.ASSERT_SCOPE || 'groupadmin'
-const SSWS = process.env.SSWS || 'sswskey'
 const client_username = process.env.CLIENT_USERNAME || 'username'
 const client_password = process.env.CLIENT_PASSWORD || 'password'
 const time_limit = process.env.TIME_LIMIT || '60'
@@ -122,75 +120,14 @@ app.post('/delegate/hook/callback', callbackAuthRequired, (req, res) => {
 })
 
 
-const oktaJwtVerifier = new OktaJwtVerifier({
-  issuer: issuer,
-  clientId: client_id,
-  assertClaims: {
-    aud: assert_aud,
-  },
-});
 
-
-var atob = require('atob');
-
-// Unvalidated payload.
-function dirtyJwtPayload(accessToken) {
-	var decoded = atob(accessToken.split('.')[1]);	
-	return JSON.parse(decoded);
-}
-
-/**
- * A simple middleware that asserts valid access tokens and sends 401 responses
- * if the token is not present or fails validation.  If the token is valid its
- * contents are attached to req.jwt
- */
-function authenticationRequired(req, res, next) {
-	const authHeader = req.headers.authorization || '';
-	const match = authHeader.match(/Bearer (.+)/);
-
-	if (!match) {
-		return res.status(401).end();
-	}
-
-	const accessToken = match[1];
-
-	if (external_verification == true) {
-		// Don't actually use oktaJwtVerifier. Assume an API Gateway has verified the access_token
-		req.jwt = {"header": {}, "claims": dirtyJwtPayload(accessToken)};
-		next();
-	} else {
-		return oktaJwtVerifier.verifyAccessToken(accessToken)
-		.then((jwt) => {
-			req.jwt = jwt;
-
-			var scopes = req.jwt.claims.scp; 
-			if (!scopes.includes(assert_scope)) {
-				res.status(401).send('Not authorized to delegate');
-			}
-			var sessionid = req.jwt.claims.sessionid;
-			if (!sessionid) {
-				res.status(401).send('Invalid session');	
-			}
-
-			next();
-		})
-		.catch((err) => {
-			res.status(401).send(err.message);
-		});
-	}
-}
-
-
-app.post('/delegate/init', authenticationRequired, (req, res) => {
-	var sessionid = req.jwt.claims.sessionid;
-	
-	// The Bearer token to this api call contains a "uid" claim. This is the Okta userId
-	var admin_id = req.jwt.claims.uid;
+app.post('/delegate/init', (req, res) => {
+	var sessionid = req.headers.sessionid;
+	var admin_id = req.headers.uid;
 
 	var headers = {
-		'Authorization': 'SSWS ' + SSWS
+		'Authorization': 'SSWS ' + req.headers.ssws
 	}
-
 
 	// get the target's group memberships
 	function groups_promise(target_id) {

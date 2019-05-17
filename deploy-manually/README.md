@@ -28,7 +28,6 @@ After the environment is done building, add the following Environment Properties
 |<sub>CLIENT_ID</sub>|`0oa4oy6xZjhJ7vWgR1t9`|<sub>The client_id of the Application configured in Okta</sub>|
 |<sub>ASSERT_AUD</sub>|`api://oktadelegate`|<sub>The Audience claim string you configured for your Authorization Server</sub>|
 |<sub>ASSERT_SCOPE</sub>|`groupadmin`|<sub>A custom scope that the Actor is authorized to use. *More about this below in the "Okta Setup" section*</sub>|
-|<sub>SSWS</sub>|`00PEBvZk9M0F3ozG8EWXZnd_0xFQP__zXR`|<sub>Generate an API Key in Okta for calling the OKta Management APIs</sub>|
 |<sub>ELASTICACHE_CONNECT_STRING</sub>|`oktadelegate-redis.wtdkro.0001.usw2.cache.amazonaws.com`|<sub>The value of the Redis "Primary Endpoint"...exclude the port number. You can find this in the ElastiCache console</sub>|
 |<sub>CLIENT_USERNAME</sub>|`serviceaccountusername`|<sub>The /delegate/hook/callback endpoint is protected with Basic auth. *More about this below in the "Okta Setup" section*. Provide a username</sub>|
 |<sub>CLIENT_PASSWORD</sub>|`password123#`|<sub>The /delegate/hook/callback endpoint is protected with Basic auth. *More about this below in the "Okta Setup" section*. Provide a password</sub>|

@@ -1,17 +1,16 @@
 {
-  "name": "oktadelegate",
+  "name": "oktadelegate-api-gateway-fork",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
-    "zip": "rm deploy-manually/oktadelegate.zip ; zip deploy-manually/oktadelegate.zip -@ < zip.list"
+    "zip": "rm deploy-manually/oktadelegate-api-gateway-fork.zip ; zip deploy-manually/oktadelegate-api-gateway-fork.zip -@ < zip.list"
   },
   "author": "zeekhoo",
   "license": "ISC",
   "dependencies": {
-    "@okta/jwt-verifier": "0.0.14",
     "atob": "^2.1.2",
     "express": "^4.16.4",
     "http": "0.0.0",
