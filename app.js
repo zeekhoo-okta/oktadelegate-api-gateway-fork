@@ -6,15 +6,9 @@ const request = require('request');
 /**
  * Environment variables
  */
-const base_url = process.env.BASE_URL || 'https://dev-123.oktapreview.com'
-const issuer = process.env.ISSUER || 'https://dev-123.oktapreview.com/oauth2/default'
-const client_id = process.env.CLIENT_ID || 'clientid'
-const assert_aud = process.env.ASSERT_AUD || 'api://default'
-const assert_scope = process.env.ASSERT_SCOPE || 'groupadmin'
 const client_username = process.env.CLIENT_USERNAME || 'username'
 const client_password = process.env.CLIENT_PASSWORD || 'password'
 const time_limit = process.env.TIME_LIMIT || '60'
-var external_verification = process.env.USE_GATEWAY_JWT_VERIFICATION || 0
 
 const redis_client = redis.createClient(6379, process.env.ELASTICACHE_CONNECT_STRING);
 redis_client.on("error", function (err) {
@@ -124,6 +118,7 @@ app.post('/delegate/hook/callback', callbackAuthRequired, (req, res) => {
 app.post('/delegate/init', (req, res) => {
 	var sessionid = JSON.parse(req.headers.sessionid);
 	var admin_id = JSON.parse(req.headers.uid);
+	var base_url = sessionid.split('/oauth2')[0];
 
 	var headers = {
 		'Authorization': 'SSWS ' + JSON.parse(req.headers.ssws)

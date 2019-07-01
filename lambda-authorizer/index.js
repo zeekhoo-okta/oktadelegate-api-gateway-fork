@@ -29,9 +29,11 @@ exports.handler = function(event, context) {
     oktaJwtVerifier.verifyAccessToken(accessTokenString)
     .then((jwt) => {
         if (!jwt.claims.scp.includes(assert_scope)) {
+            console.log('does not contain groupadmin scope');
             return context.fail('Unauthorized');
         }
         if (!jwt.claims.sessionid) {
+            console.log('does not have sessionid');
             return context.fail('Unauthorized');
         }
 
@@ -58,9 +60,11 @@ exports.handler = function(event, context) {
             ctx.ssws = JSON.stringify(ssws);
         }
         builtPolicy.context = ctx;
+        console.log('returning allow POST /delegate/init');
         return context.succeed(builtPolicy);
     })
     .catch((err) => {
+        console.log('jwt verification failed');
         console.log(err);
         return context.fail('Unauthorized');
     });
